@@ -1,0 +1,9 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(in hsl, rgb(204, 204, 255), rgb(255, 255, 255));
+    display: flex;
+    justify-content: center;
+}
+
+

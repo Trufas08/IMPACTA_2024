@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="../static/cadastro.css">
+    <meta charset="UTF-8">
+    <title>Cadastro</title>
+</head>
+<body>
+    <div class="titulo">
+        <h1>Books List</h1>
+    </div>
+    <br>
+    <br>
+
+    <form method="POST" class="cadastro">
+        <div>
+            <label for="tx-email">E-mail:</label><br>
+            <input type="text" name="email" id="tx-email">
+        </div>
+        <div>
+            <label for="tx-usuario">Usuário:</label><br>
+            <input type="text" name="usuario" id="tx-usuario">
+        </div>
+        <div>
+            <label for="tx-senha">Senha:</label><br>
+            <input type="password" name="senha" id="tx-senha">
+        </div>
+        <button type="submit">Enviar</button>
+        <p class="mensagem_cadastro">{{ mensagem }}</p>
+    </form>
+</body>
+</html>
