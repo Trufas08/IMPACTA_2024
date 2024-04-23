@@ -7,10 +7,6 @@
 {% block conteudo %}
 <form method="POST" class="formulario">
     <div>
-        <label for="tx-email">E-mail:</label><br>
-        <input type="text" name="email" id="tx-email">
-    </div>
-    <div>
         <label for="tx-usuario">Usuário:</label><br>
         <input type="text" name="usuario" id="tx-usuario">
     </div>
@@ -18,7 +14,7 @@
         <label for="tx-senha">Senha:</label><br>
         <input type="password" name="senha" id="tx-senha">
     </div>
-    <button type="submit">Cadastrar</button>
+    <button type="submit">Login</button>
     <p class="mensagem">{{ mensagem }}</p>
 </form>
 {% endblock %}

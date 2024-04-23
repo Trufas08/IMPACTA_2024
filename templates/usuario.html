@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html lang="pt-br">
+<head>
+  <link rel="stylesheet" href="../static/usuario.css">
+  <title>Perfil - {{ usuario }} - My Book List</title>
+</head>
+<body>
+  <div id="container">
+    <div id="content">
+      <div class="user-profile">
+        <div class="profile-header">
+          <div class="user-avatar">
+            <div class="avatar">
+              <img src="/static/1.png" alt="Avatar">
+            </div>
+            <div class="user-details">
+              <h1 class="tx-usuario">{{ usuario }}</h1>
+            </div>
+          </div>
+          <div class="logout-button">
+            <form action="/logout" method="post">
+              <button type="submit">Sair</button>
+            </form>
+          </div>
+        </div>
+        
+        <div class="profile-content">
+          <div class="profile-stats">
+            <div class="stat">
+              <h2 class="tx-favoritos">Favoritos: {{ favoritos }}</h1>
+            </div>
+            <div class="stat">
+              <h2 class="tx-avaliacoes">Avaliações: {{ avaliacoes }}</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
