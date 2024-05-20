@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, jsonify
 from models.database import Database
 
 app = Flask(__name__)
@@ -10,6 +10,27 @@ db = Database()
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.route('/pesquisa', methods=['GET'])
+def pesquisa():
+    query = request.args.get('query')
+    if query:
+        livros = db.pesquisar_livros(query)
+        livros_formatados = [{'id': livro[0], 'titulo': livro[1]} for livro in livros]
+        return jsonify({'livros': livros_formatados})
+    else:
+        return jsonify({'livros': []})
+    
+
+@app.route('/detalhes_livro/<int:livro_id>')
+def detalhes_livro(livro_id):
+    livro = db.obter_detalhes_livro(livro_id)
+    if livro:
+        return render_template('detalhes_livro.html', livro=livro)
+    else:
+        return "Livro não encontrado", 404
+
 
 
 @app.route('/cadastro', methods=["GET", "POST"])
@@ -69,4 +90,4 @@ def usuario():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)

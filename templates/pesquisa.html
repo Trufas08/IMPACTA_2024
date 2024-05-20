@@ -1,0 +1,33 @@
+<div class="search">
+    <input type="text" id="searchInput" placeholder="Pesquise por um livro" oninput="searchQuery()">
+    <div id="searchResults"></div>
+</div>
+<script>
+    function searchQuery() {
+        const query = document.getElementById('searchInput').value;
+        if (query.length >= 1) {
+            fetch(`/pesquisa?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultsDiv = document.getElementById('searchResults');
+                    resultsDiv.innerHTML = '';
+
+                    if (data.livros.length > 0) {
+                        let livrosHeader = document.createElement('h2');
+                        livrosHeader.innerText = 'Livros';
+                        resultsDiv.appendChild(livrosHeader);
+                        data.livros.forEach(livro => {
+                            let livroLink = document.createElement('a');
+                            livroLink.href = `/detalhes_livro/${livro.id}`;
+                            livroLink.innerText = livro.titulo;
+                            let livroDiv = document.createElement('div');
+                            livroDiv.appendChild(livroLink);
+                            resultsDiv.appendChild(livroDiv);
+                        });
+                    }
+                });
+        } else {
+            document.getElementById('searchResults').innerHTML = '';
+        }
+    }
+</script>

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block titulo %}
+<title>Detalhes do Livro</title>
+{% endblock %}
+
+{% block conteudo %}
+{% include "pesquisa.html" %}
+<div class="detalhes-livro">
+    <h2>{{ livro.titulo }}</h2>
+    <p><strong>Autor:</strong> {{ livro.autor }}</p>
+    <p><strong>Categoria:</strong> {{ livro.categoria }}</p>
+</div>
+{% endblock %}
