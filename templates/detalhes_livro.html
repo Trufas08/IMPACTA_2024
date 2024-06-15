@@ -10,5 +10,24 @@
     <h2>{{ livro.titulo }}</h2>
     <p><strong>Autor:</strong> {{ livro.autor }}</p>
     <p><strong>Categoria:</strong> {{ livro.categoria }}</p>
+    <button id="favoritoBtn" onclick="gerenciarFavorito({{ livro.id }})">
+        {{ 'Adicionar aos Favoritos' if not livro.eh_favorito else 'Remover dos Favoritos' }}
+    </button>
 </div>
+<script>
+    function gerenciarFavorito(livroId) {
+        const isFavorito = document.getElementById('favoritoBtn').innerText.includes('Remover');
+        const url = isFavorito ? `/remover_favorito/${livroId}` : `/adicionar_favorito/${livroId}`;
+        
+        fetch(url, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('favoritoBtn').innerText = isFavorito ? 'Adicionar aos Favoritos' : 'Remover dos Favoritos';
+                } else {
+                    alert(data.message || 'Erro ao atualizar favorito.');
+                }
+            });
+    }
+</script>
 {% endblock %}

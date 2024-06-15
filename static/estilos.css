@@ -2,7 +2,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    background-color: #fff
+    background-color: #fff;
 }
 
 
@@ -74,8 +74,7 @@ button:hover {
 
 
 nav a:active {
-    color: #fff; /* Define a cor desejada para o link quando estiver ativo */
-    /* Outras propriedades de estilo, se necessário */
+    color: #fff;
 }
 
 
@@ -108,4 +107,33 @@ nav a:visited {
 
 .search div {
     margin-bottom: 10px;
+}
+
+
+.nav-left, .nav-right {
+    display: flex;
+    align-items: center;
+}
+
+
+.nav-left a, .nav-right a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #fff;
+}
+
+
+.nav-right form {
+    display: inline;
+}
+
+
+.logout-button {
+    background: none;
+    border: none;
+    color: #fff;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
 }

@@ -9,7 +9,8 @@ db = Database()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    usuario = get_usuario()
+    return render_template('index.html', usuario=usuario)
 
 
 @app.route('/pesquisa', methods=['GET'])
@@ -21,21 +22,12 @@ def pesquisa():
         return jsonify({'livros': livros_formatados})
     else:
         return jsonify({'livros': []})
-    
-
-@app.route('/detalhes_livro/<int:livro_id>')
-def detalhes_livro(livro_id):
-    livro = db.obter_detalhes_livro(livro_id)
-    if livro:
-        return render_template('detalhes_livro.html', livro=livro)
-    else:
-        return "Livro não encontrado", 404
-
 
 
 @app.route('/cadastro', methods=["GET", "POST"])
 def cadastro():
     msg = ''
+    usuario = get_usuario()
     if request.method == 'POST':
         usuario = request.form['usuario'].lower().replace(' ', '')
         senha = request.form['senha'].replace(' ', '')
@@ -52,12 +44,13 @@ def cadastro():
             elif db.usuario_existe(usuario):
                 msg = "Usuário já cadastrado"
 
-    return render_template('cadastro.html', mensagem=msg)
+    return render_template('cadastro.html', mensagem=msg, usuario=usuario)
 
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
     msg = ''
+    usuario = get_usuario()
     if request.method == 'POST':
         usuario = request.form['usuario'].lower().replace(' ', '')
         senha = request.form['senha']
@@ -69,7 +62,11 @@ def login():
             else:
                 msg = "Usuário ou senha incorretos."
 
-    return render_template('login.html', mensagem=msg)
+    return render_template('login.html', mensagem=msg, usuario=usuario)
+
+
+def get_usuario():
+    return session.get('usuario', None)
 
 
 @app.route('/logout', methods=["POST"])
@@ -82,11 +79,38 @@ def logout():
 def usuario():
     if 'usuario' in session:
         usuario = session['usuario']
-        favoritos = db.obter_numero_favoritos(usuario)
+        favoritos = db.obter_favoritos(usuario)
         avaliacoes = db.obter_numero_avaliacoes(usuario)
-        return render_template('usuario.html', usuario=usuario.capitalize(), favoritos=favoritos , avaliacoes=avaliacoes)
+        return render_template('usuario.html', usuario=usuario.capitalize(), favoritos=favoritos, avaliacoes=avaliacoes)
     else:
         return redirect('/login')
+
+
+@app.route('/adicionar_favorito/<int:livro_id>', methods=['POST'])
+def adicionar_favorito(livro_id):
+    if 'usuario' in session:
+        usuario = session['usuario']
+        db.adicionar_favorito(usuario, livro_id)
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'message': 'Usuário não está logado.'})
+
+
+@app.route('/remover_favorito/<int:livro_id>', methods=['POST'])
+def remover_favorito(livro_id):
+    if 'usuario' in session:
+        usuario = session['usuario']
+        db.remover_favorito(usuario, livro_id)
+        return jsonify({'success': True})
+    else:
+        return jsonify({'success': False, 'message': 'Usuário não está logado.'})
+
+
+@app.route('/detalhes_livro/<int:livro_id>')
+def detalhes_livro(livro_id):
+    usuario = get_usuario()
+    detalhes = db.obter_detalhes_livro(livro_id, usuario)
+    return render_template('detalhes_livro.html', livro=detalhes, usuario=usuario)
 
 
 if __name__ == '__main__':

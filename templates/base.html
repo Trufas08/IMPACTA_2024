@@ -1,18 +1,27 @@
 <!DOCTYPE html>
-<meta charset="UTF-8">
 <html lang="pt-br">
-<head>
+<meta charset="UTF-8">
+<head>   
     <link rel="stylesheet" href="../static/estilos.css">
-    <meta charset="UTF-8">
-    {% block titulo %}{% endblock %}
+    <title>{% block titulo %}{% endblock %}</title>
 </head>
 <body>
     <header class="header">
-        <nav>
-            <a href="/">Página inicial</a> |
-            <a href="/cadastro">Cadastrar</a> |
-            <a href="/login">Login</a>
+        <nav class="nav-left">
+            <a href="/">Página inicial</a>
+            {% if not usuario %}
+                | <a href="/cadastro">Cadastrar</a>
+                | <a href="/login">Login</a>
+            {% endif %}
         </nav>
+        {% if usuario %}
+        <nav class="nav-right">
+            <a href="/usuario">{{ usuario }}</a>
+            | <form action="/logout" method="post" style="display:inline;">
+                <button type="submit" class="logout-button">Sair</button>
+            </form>
+        </nav>
+        {% endif %}
     </header>
     <div class="titulo">
         <h1>My Book List</h1>

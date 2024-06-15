@@ -18,25 +18,47 @@
               <h1 class="tx-usuario">{{ usuario }}</h1>
             </div>
           </div>
-          <div class="logout-button">
-            <form action="/logout" method="post">
-              <button type="submit">Sair</button>
-            </form>
+          <div class="usuario-actions">
+            <a href="/" class="button inicio-button">Início</a>
+            <b>|</b>
+            <div class="logout-button">
+              <form action="/logout" method="post">
+                <button type="submit">Sair</button>
+              </form>
+            </div>
           </div>
         </div>
-        
+
         <div class="profile-content">
           <div class="profile-stats">
             <div class="stat">
-              <h2 class="tx-favoritos">Favoritos: {{ favoritos }}</h1>
+              <h2 class="tx-favoritos">Favoritos: {{ favoritos | length }}</h2>
+              <button id="mostrar-favoritos">Mostrar Favoritos</button>
+              <div id="lista-favoritos" style="display: none;">
+                <ul>
+                  {% for favorito in favoritos %}
+                    <li>{{ favorito[1] }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
             </div>
             <div class="stat">
-              <h2 class="tx-avaliacoes">Avaliações: {{ avaliacoes }}</h1>
+              <h2 class="tx-avaliacoes">Avaliações: {{ avaliacoes }}</h2>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <script>
+    document.getElementById("mostrar-favoritos").addEventListener("click", function() {
+      var listaFavoritos = document.getElementById("lista-favoritos");
+      if (listaFavoritos.style.display === "none") {
+        listaFavoritos.style.display = "block";
+      } else {
+        listaFavoritos.style.display = "none";
+      }
+    });
+  </script>
 </body>
 </html>

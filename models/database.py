@@ -6,7 +6,7 @@ class Database:
         self.conexao = mysql.connector.connect(
             host='127.0.0.1',
             user='root',
-            password='awLTzNQqYwaKBlyMbG5aCJg1xyOsKehY3z5CGnW2ga8a2Nc26V',
+            password='qqDa1u3PvmVLcoOKme8WULzBQ1b0qzMKFmT4dSzkmxLhjvFAWh',
             database='livraria'
         )
         self.cursor = self.conexao.cursor()
@@ -76,13 +76,49 @@ class Database:
         return resultados
     
 
-    def obter_detalhes_livro(self, livro_id):
+    def adicionar_favorito(self, usuario, livro_id):
+        comando = """
+        INSERT INTO Favoritos (usuario_id, livro_id) 
+        VALUES (
+            (SELECT usuario_id FROM Usuarios WHERE nome = %s), 
+            %s
+        )
+        """
+        self.cursor.execute(comando, (usuario, livro_id))
+        self.conexao.commit()
+
+
+    def remover_favorito(self, usuario, livro_id):
+        comando = """
+        DELETE FROM Favoritos 
+        WHERE usuario_id = (SELECT usuario_id FROM Usuarios WHERE nome = %s) 
+        AND livro_id = %s
+        """
+        self.cursor.execute(comando, (usuario, livro_id))
+        self.conexao.commit()
+
+
+    def verificar_favorito(self, usuario, livro_id):
+        comando = """
+        SELECT COUNT(*) FROM Favoritos 
+        WHERE usuario_id = (SELECT usuario_id FROM Usuarios WHERE nome = %s) 
+        AND livro_id = %s
+        """
+        self.cursor.execute(comando, (usuario, livro_id))
+        resultado = self.cursor.fetchone()
+        return resultado[0] > 0
+
+
+    def obter_detalhes_livro(self, livro_id, usuario):
         comando = """
         SELECT 
             l.livro_id, 
             l.titulo, 
             l.autor, 
-            c.nome AS categoria 
+            c.nome AS categoria,
+            (SELECT COUNT(*) FROM Favoritos f 
+             WHERE f.livro_id = l.livro_id 
+             AND f.usuario_id = (SELECT usuario_id FROM Usuarios WHERE nome = %s)) AS eh_favorito
         FROM 
             Livros l
         JOIN 
@@ -90,7 +126,7 @@ class Database:
         WHERE 
             l.livro_id = %s
         """
-        self.cursor.execute(comando, (livro_id,))
+        self.cursor.execute(comando, (usuario, livro_id))
         resultado = self.cursor.fetchone()
         
         if resultado:
@@ -98,11 +134,35 @@ class Database:
                 'id': resultado[0],
                 'titulo': resultado[1],
                 'autor': resultado[2],
-                'categoria': resultado[3]
+                'categoria': resultado[3],
+                'eh_favorito': resultado[4] > 0
             }
         else:
             return None
 
+
+    def obter_usuario_id(self, usuario_nome):
+        query = "SELECT usuario_id FROM Usuarios WHERE nome = %s"
+        self.cursor.execute(query, (usuario_nome,))
+        resultado = self.cursor.fetchone()
+        return resultado[0] if resultado else None
+
+
+    def obter_favoritos(self, usuario_nome):
+        usuario_id = self.obter_usuario_id(usuario_nome)
+        if not usuario_id:
+            return []
+
+        query = """
+        SELECT l.livro_id, l.titulo
+        FROM Favoritos f
+        JOIN Livros l ON f.livro_id = l.livro_id
+        WHERE f.usuario_id = %s
+        """
+        self.cursor.execute(query, (usuario_id,))
+        resultados = self.cursor.fetchall()
+        return resultados
+    
     
     def fechar_conexao(self):
         self.cursor.close()
